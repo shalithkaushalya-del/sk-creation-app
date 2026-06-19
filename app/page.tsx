@@ -58,7 +58,7 @@ export default function Home() {
   const fashionItems = ["/fashion-1.jpg", "/fashion-2.jpg", "/fashion-3.jpg"];
   const craftItems = ["/craft-1.jpg", "/craft-2.jpg", "/craft-3.jpg"];
   const digitalItems = ["/digital-1.jpg", "/digital-2.jpg", "/digital-3.jpg"];
-  const solutionItems = ["/solution-1.jpg", "/solution-2.jpg", "/solution-3.jpg"];
+  const solutionItems = ["/solution-1.jpg", "/solution-3.jpg", "/solution-3.jpg"];
 
   const cards = [
     { name: "SK Fashion", link: "/fashion", desc: "Premium T-Shirt printing & custom exclusive urban streetwear.", img: images.fashion_card_img, logo: "/sk-fashion-logo.png", border: "hover:border-red-500/50" },
@@ -66,6 +66,9 @@ export default function Home() {
     { name: "SK Digital", link: "/digital", desc: "AI-generated promo videos, scripts, and digital masterclass.", img: images.digital_card_img, logo: "/sk-digital-logo.png", border: "hover:border-purple-500/50" },
     { name: "SK Solution", link: "/solutions", desc: "Explore our exclusive professional tools and digital solutions.", img: images.solution_card_img, logo: "/sk-solution-logo.png", border: "hover:border-teal-500/50" }
   ];
+
+  // මෙතන තමයි Log එක දාලා තියෙන්නේ
+  console.log("Cards Array Check:", cards);
 
   return (
     <main className="min-h-screen bg-[#111113] text-white font-sans relative pb-32 overflow-x-hidden">
@@ -78,7 +81,6 @@ export default function Home() {
           </h1>
         </div>
 
-        {/* ඔන්න අර කලින් තිබ්බ රූප රාමු Blocks 4 */}
         <div className="grid grid-cols-3 grid-rows-2 gap-3 h-64 md:h-80">
           <div className="col-span-1 row-span-2"><AutoSlider images={fashionItems} /></div>
           <div className="col-span-2 row-span-1"><AutoSlider images={craftItems} /></div>
