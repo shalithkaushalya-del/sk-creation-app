@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import { useCartStore } from '@/store/useCartStore';
 
-export const dynamic = 'force-dynamic'; // Cache ප්‍රශ්නය විසඳන්න
+export const dynamic = 'force-dynamic'; 
 
 export default function SolutionsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -16,12 +16,12 @@ export default function SolutionsPage() {
 
   useEffect(() => {
     async function fetchProducts() {
+      // මෙතන තමයි Database එකෙන් category එක 'SKS' ලෙස තියෙන දේවල් පමණක් ගන්නේ
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        // 👇 මෙතන 'SKF' වෙනුවට 'SKS' කියලා හැදුවා (SK Solution සඳහා)
         .eq('category', 'SKS') 
-        .order('id', { ascending: false }); // අලුත්ම ඒවා උඩින් පේන්න
+        .order('id', { ascending: false }); 
       
       if (error) {
         console.error("Supabase Error:", error);
@@ -58,7 +58,7 @@ export default function SolutionsPage() {
       </header>
 
       {products.length === 0 ? (
-        <div className="text-center text-gray-500 mt-20">මෙම කාණ්ඩයේ අයිතම තවම එකතු කර නොමැත.</div>
+        <div className="text-center text-gray-500 mt-20">මෙම කාණ්ඩයේ (SKS) අයිතම තවම එකතු කර නොමැත.</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {products.map((item) => (
