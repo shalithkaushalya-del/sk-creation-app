@@ -5,8 +5,18 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
+// Typescript Errors එන එක නවත්වන්න Product Type එකක් හැදුවා
+type Product = {
+  id: number;
+  name: string;
+  price: string;
+  item_code: string;
+  category: string;
+  image_url: string;
+};
+
 export default function AdminPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('SKC');
@@ -49,7 +59,7 @@ export default function AdminPage() {
 
   async function fetchProducts() {
     const { data } = await supabase.from('products').select('*').order('id', { ascending: false });
-    if (data) setProducts(data);
+    if (data) setProducts(data as Product[]);
   }
 
   async function handleDelete(id: number) {
@@ -58,7 +68,7 @@ export default function AdminPage() {
     fetchProducts();
   }
 
-  function handleEdit(item: any) {
+  function handleEdit(item: Product) {
     setEditingId(item.id);
     setName(item.name);
     setPrice(item.price);
@@ -77,22 +87,27 @@ export default function AdminPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setUploading(true);
-    let image_url = '';
+    let final_image_url = '';
     
+    // පින්තූරය අප්ලෝඩ් කරලා කෙලින්ම Public URL එක ගන්න විදියට හැදුවා
     if (image) {
       const fileName = `${Date.now()}_${Math.random()}.png`;
-      await supabase.storage.from('product-images').upload(fileName, image);
-      image_url = fileName;
+      const { error: uploadError } = await supabase.storage.from('product-images').upload(fileName, image);
+      
+      if (!uploadError) {
+         const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(fileName);
+         final_image_url = urlData.publicUrl;
+      }
     }
 
     const finalCategory = category === 'solution' ? 'SKS' : category;
 
     if (editingId) {
-      const updateData: any = { name, price, item_code: itemCode, category: finalCategory };
-      if (image_url) updateData.image_url = image_url;
+      const updateData: Partial<Product> = { name, price, item_code: itemCode, category: finalCategory };
+      if (final_image_url) updateData.image_url = final_image_url;
       await supabase.from('products').update(updateData).eq('id', editingId);
     } else {
-      await supabase.from('products').insert([{ name, price, item_code: itemCode, category: finalCategory, image_url }]);
+      await supabase.from('products').insert([{ name, price, item_code: itemCode, category: finalCategory, image_url: final_image_url }]);
     }
     resetForm();
     setUploading(false);
@@ -106,7 +121,6 @@ export default function AdminPage() {
           <p className="text-xs text-gray-500">Manage Products & Inventory</p>
         </div>
         
-        {/* 👇 මෙන්න මේ ලින්ක් ටික තමයි මට කලින් දාන්න අමතක වුණේ! */}
         <div className='flex gap-2 bg-gray-900 p-1 rounded-full border border-gray-800 flex-wrap justify-center'>
           <Link href="/admin/dashboard" className="text-gray-400 px-4 py-2 rounded-full text-xs hover:text-white transition hover:bg-gray-800">Dashboard Images</Link>
           <Link href="/admin/manage-solutions" className="text-gray-400 px-4 py-2 rounded-full text-xs hover:text-white transition hover:bg-gray-800">Manage Solutions</Link>
